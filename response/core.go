@@ -1,6 +1,7 @@
 package response
 
 import (
+	"fmt"
 	"time"
 )
 
@@ -61,3 +62,17 @@ const (
 	FormatMarkdown Format = "markdown"
 	FormatTerminal Format = "terminal"
 )
+
+// ConsoleEmitter prints the response to standard output.
+type ConsoleEmitter struct{}
+
+// NewConsoleEmitter creates a new console emitter.
+func NewConsoleEmitter() *ConsoleEmitter {
+	return &ConsoleEmitter{}
+}
+
+// Emit prints the response content.
+func (e *ConsoleEmitter) Emit(r *Response) error {
+	fmt.Printf("[%s] %s (Certainty: %.2f)\n", r.Tone, r.Content, r.Certainty)
+	return nil
+}
