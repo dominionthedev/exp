@@ -11,14 +11,13 @@ This repo contains various experiments projects, modules, tools, and utilities t
 
 ## Projects
 
-- [**sheme**](./sheme/): a tool for creating themes for shell.
-codes shell-syntax based tokens and variables that represents colours in shells into a bash/zsh compatible `.theme` files , and tries to make it default.
-Uses [wondertone](https://github.com/leraniode/wondertone) as the colour source. A **tone** is a colour, a **palette** is a theme(`.theme`)
+- [**leak**](./leak/): A Python module for terminal service management and event-driven interactions. Features an `asyncio` event bus, lifecycle control, and terminal utility helpers.
 
-- [**response**](./response/): a go library that contains different types of response a tool can give instead of plain outputs.
-uses [illygen](https://github.com/leraniode/illygen).
+- [**sheme**](./sheme/): A Go library for creating shell themes from [Wondertone](https://github.com/leraniode/wondertone) palettes. Generates `.theme` files with shell variables and OSC sequences.
 
-- [**Sensible**](./sensible/): A Library of simple and smart logics, types, functions, classes, chains(loops), and decorators for data modeling, workflows and development in [python](./sensible/py) and [go](./sensible/go).
+- [**response**](./response/): A Go library for structured, intelligence-driven tool outputs. Uses [illygen](https://github.com/leraniode/illygen) reasoning flows to transform technical data into human-like responses.
+
+- [**Sensible**](./sensible/): A utility library providing simple and smart logics, types, functions, and decorators for [Python](./sensible/py) and [Go](./sensible/go).
 
 ## License
 
