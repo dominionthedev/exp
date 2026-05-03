@@ -77,3 +77,28 @@ func TestUtilities(t *testing.T) {
 		t.Error("SentenceCount failed")
 	}
 }
+
+func TestToTitle(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected string
+	}{
+		{"hello world", "Hello World"},
+		{"the quick brown fox", "The Quick Brown Fox"},
+		{"ALREADY UPPER", "Already Upper"},
+	}
+	for _, tt := range tests {
+		got := ToTitle(tt.input)
+		if got != tt.expected {
+			t.Errorf("ToTitle(%q) = %q; want %q", tt.input, got, tt.expected)
+		}
+	}
+}
+
+func TestToPascal_Unicode(t *testing.T) {
+	// Ensure non-ASCII letters are handled without panic
+	got := ToPascal("café latte")
+	if got == "" {
+		t.Error("ToPascal returned empty for unicode input")
+	}
+}
