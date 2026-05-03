@@ -5,6 +5,7 @@ import (
 
 	"github.com/dominionthedev/exp/response"
 	"github.com/dominionthedev/exp/response/casual"
+	"github.com/dominionthedev/exp/response/joyful"
 	"github.com/dominionthedev/exp/response/pro"
 	"github.com/dominionthedev/exp/response/witty"
 	illygen "github.com/leraniode/illygen"
@@ -24,9 +25,11 @@ func TestResponseFlow(t *testing.T) {
 		Add(pro.NewNode()).
 		Add(witty.NewNode()).
 		Add(casual.NewNode()).
+		Add(joyful.NewNode()).
 		Link("interpreter", "pro", 1.0).
 		Link("interpreter", "witty", 1.0).
-		Link("interpreter", "casual", 1.0)
+		Link("interpreter", "casual", 1.0).
+		Link("interpreter", "joyful", 1.0)
 
 	engine := illygen.NewEngine(store)
 	adapter := response.NewAdapter(flow, engine)
@@ -85,6 +88,59 @@ func TestResponseFlow(t *testing.T) {
 		}
 		if resp.Content != "Just so you know: server is running" {
 			t.Errorf("unexpected content: %s", resp.Content)
+		}
+	})
+}
+
+func TestJoyfulNode(t *testing.T) {
+	store := illygen.NewKnowledgeStore()
+	flow := illygen.NewFlow().
+		Add(response.InterpreterNode()).
+		Add(joyful.NewNode()).
+		Link("interpreter", "joyful", 1.0)
+
+	engine := illygen.NewEngine(store)
+	adapter := response.NewAdapter(flow, engine)
+
+	t.Run("Joyful Success", func(t *testing.T) {
+		ctx := map[string]any{
+			"input": "success: deploy finished",
+			"mode":  "joyful",
+		}
+		resp, err := adapter.Generate(ctx)
+		if err != nil {
+			t.Fatalf("Generate failed: %v", err)
+		}
+		if resp.Tone != "joyful" {
+			t.Errorf("expected tone joyful, got %s", resp.Tone)
+		}
+	})
+
+	t.Run("Joyful Error", func(t *testing.T) {
+		ctx := map[string]any{
+			"input": "error: disk full",
+			"mode":  "joyful",
+		}
+		resp, err := adapter.Generate(ctx)
+		if err != nil {
+			t.Fatalf("Generate failed: %v", err)
+		}
+		if resp.Tone != "joyful" {
+			t.Errorf("expected tone joyful, got %s", resp.Tone)
+		}
+	})
+
+	t.Run("Joyful Warning", func(t *testing.T) {
+		ctx := map[string]any{
+			"input": "warn: memory usage high",
+			"mode":  "joyful",
+		}
+		resp, err := adapter.Generate(ctx)
+		if err != nil {
+			t.Fatalf("Generate failed: %v", err)
+		}
+		if resp.Tone != "joyful" {
+			t.Errorf("expected tone joyful, got %s", resp.Tone)
 		}
 	})
 }
