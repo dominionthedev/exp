@@ -1,16 +1,38 @@
+// Package sheme is the Shell Theme Engine.
+//
+// It converts a Wondertone palette into a shell-sourceable theme string
+// through a staged colour pipeline:
+//
+//	Extract → Classify → Normalize → Neutralize → Assign → Adjust
+//
+// Each stage has a single responsibility. The Neutralize stage is the key
+// component that fixes colour problems (low contrast, washed-out colours,
+// invisible cursor) before ANSI slots are assigned.
+//
+// sheme is a pure library — it produces strings, never files.
+// Writing, naming, or sourcing theme output is the caller's responsibility.
+//
+// Basic usage:
+//
+//	content, err := sheme.Generate(palette)
+//
+// Custom pipeline:
+//
+//	theme, err := sheme.NewPipeline().Run(palette)
+//	content := theme.Render()
 package sheme
 
-import (
-	"fmt"
-	"github.com/leraniode/wondertone/palette"
-)
+import "github.com/leraniode/wondertone/palette"
 
-// Generate takes a Wondertone palette and returns the .theme content.
+// Generate converts a Wondertone palette to a shell-sourceable theme string
+// using the default pipeline.
+//
+// The returned string is pure text — what you do with it (write to a file,
+// source it, print it) is entirely up to the caller.
 func Generate(p *palette.Palette) (string, error) {
-	if p == nil {
-		return "", fmt.Errorf("palette cannot be nil")
+	theme, err := NewPipeline().Run(p)
+	if err != nil {
+		return "", err
 	}
-	g := NewGenerator(p)
-	theme := g.GenerateTheme()
-	return theme.Export(), nil
+	return theme.Render(), nil
 }
