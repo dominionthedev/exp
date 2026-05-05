@@ -44,6 +44,33 @@ func (r Result[T]) UnwrapOr(def T) T {
 	return r.value
 }
 
+// UnwrapOrElse returns the value if it's a success, or the result of the given function applied to the error.
+func (r Result[T]) UnwrapOrElse(f func(error) T) T {
+	if r.err != nil {
+		return f(r.err)
+	}
+	return r.value
+}
+
+// UnwrapOrDefault returns the value if it's a success, or the zero value of T if it's a failure.
+func (r Result[T]) UnwrapOrDefault() T {
+	if r.err != nil {
+		var zero T
+		return zero
+	}
+	return r.value
+}
+
+// IsOkAnd returns true if the result is Ok and the value matches the predicate.
+func (r Result[T]) IsOkAnd(predicate func(T) bool) bool {
+	return r.err == nil && predicate(r.value)
+}
+
+// IsErrorAnd returns true if the result is Error and the error matches the predicate.
+func (r Result[T]) IsErrorAnd(predicate func(error) bool) bool {
+	return r.err != nil && predicate(r.err)
+}
+
 // Error returns the error if it's a failure, or nil if it's a success.
 func (r Result[T]) Error() error {
 	return r.err

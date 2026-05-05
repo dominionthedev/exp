@@ -1,6 +1,7 @@
 package strings
 
 import (
+	"math/rand"
 	"regexp"
 	"strings"
 	"unicode"
@@ -152,4 +153,108 @@ func WordCount(text string) int {
 // SentenceCount counts the number of sentences in text.
 func SentenceCount(text string) int {
 	return len(regexp.MustCompile(`[^.!?]+[.!?]+`).FindAllString(text, -1))
+}
+
+// Lower converts text to lowercase.
+func Lower(text string) string {
+	return strings.ToLower(text)
+}
+
+// Upper converts text to uppercase.
+func Upper(text string) string {
+	return strings.ToUpper(text)
+}
+
+// SwapCase swaps the case of all letters in the text.
+func SwapCase(text string) string {
+	return strings.Map(func(r rune) rune {
+		if unicode.IsUpper(r) {
+			return unicode.ToLower(r)
+		}
+		if unicode.IsLower(r) {
+			return unicode.ToUpper(r)
+		}
+		return r
+	}, text)
+}
+
+// StartsWith checks if text starts with a prefix.
+func StartsWith(text string, prefix string) bool {
+	return strings.HasPrefix(text, prefix)
+}
+
+// EndsWith checks if text ends with a suffix.
+func EndsWith(text string, suffix string) bool {
+	return strings.HasSuffix(text, suffix)
+}
+
+// Contains checks if text contains a substring.
+func Contains(text string, substring string) bool {
+	return strings.Contains(text, substring)
+}
+
+// CountOccurrences counts occurrences of a substring in text.
+func CountOccurrences(text string, substring string) int {
+	return strings.Count(text, substring)
+}
+
+// RandomString generates a random string of a given length.
+func RandomString(length int, charset string) string {
+	if charset == "" {
+		charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	}
+	b := make([]byte, length)
+	for i := range b {
+		b[i] = charset[rand.Intn(len(charset))]
+	}
+	return string(b)
+}
+
+// IsPalindrome checks if text is a palindrome (ignoring case and non-alphanumeric characters).
+func IsPalindrome(text string) bool {
+	var cleaned []rune
+	for _, r := range strings.ToLower(text) {
+		if unicode.IsLetter(r) || unicode.IsDigit(r) {
+			cleaned = append(cleaned, r)
+		}
+	}
+	for i := 0; i < len(cleaned)/2; i++ {
+		if cleaned[i] != cleaned[len(cleaned)-1-i] {
+			return false
+		}
+	}
+	return true
+}
+
+// MaskText masks text, showing only the specified number of characters at start and end.
+func MaskText(text string, visibleStart int, visibleEnd int, maskChar string) string {
+	runes := []rune(text)
+	if len(runes) <= visibleStart+visibleEnd {
+		return text
+	}
+	maskedLen := len(runes) - visibleStart - visibleEnd
+	result := string(runes[:visibleStart])
+	result += strings.Repeat(maskChar, maskedLen)
+	if visibleEnd > 0 {
+		result += string(runes[len(runes)-visibleEnd:])
+	}
+	return result
+}
+
+// FirstWord gets the first word from text.
+func FirstWord(text string) string {
+	fields := strings.Fields(text)
+	if len(fields) == 0 {
+		return ""
+	}
+	return fields[0]
+}
+
+// LastWord gets the last word from text.
+func LastWord(text string) string {
+	fields := strings.Fields(text)
+	if len(fields) == 0 {
+		return ""
+	}
+	return fields[len(fields)-1]
 }

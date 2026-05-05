@@ -1,4 +1,5 @@
 from typing import Generic, TypeVar, Callable, Any, List, Optional, Iterable
+import functools
 
 T = TypeVar("T")
 U = TypeVar("U")
@@ -49,10 +50,14 @@ class Chain(Generic[T]):
             return Chain(then_func(self._value)) if then_func else self
         return Chain(else_func(self._value)) if else_func else self
 
-    def fold(self, func: Callable[[T, T], T]) -> "Chain[T]":
+    def fold(self, func: Callable[[Any, Any], Any], initial: Optional[Any] = None) -> "Chain[Any]":
         """Fold/reduce the chain value by applying a function cumulatively."""
-        # For now, just return self - can be extended for iterable values
-        return self
+        if not isinstance(self._value, Iterable):
+            raise TypeError("fold() requires an iterable value")
+
+        if initial is not None:
+            return Chain(functools.reduce(func, self._value, initial))
+        return Chain(functools.reduce(func, self._value))
 
     def collect(self) -> T:
         """Consume the chain and return the final value."""
@@ -67,6 +72,14 @@ class Chain(Generic[T]):
     def or_else(self, other: T) -> "Chain[T]":
         """Return other value if current value is None (alias for if_none)."""
         return self.if_none(other)
+
+    def is_none(self) -> bool:
+        """Return True if the current value is None."""
+        return self._value is None
+
+    def is_not_none(self) -> bool:
+        """Return True if the current value is not None."""
+        return self._value is not None
 
 def chain(value: T) -> Chain[T]:
     """Start a new chain with the given value."""

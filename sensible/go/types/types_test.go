@@ -56,6 +56,31 @@ func TestResult(t *testing.T) {
 			t.Error("expected r3 to be an error")
 		}
 	})
+
+	t.Run("NewMethods", func(t *testing.T) {
+		r := Ok(10)
+		if r.UnwrapOrElse(func(err error) int { return 0 }) != 10 {
+			t.Error("UnwrapOrElse failed on Ok")
+		}
+		if r.UnwrapOrDefault() != 10 {
+			t.Error("UnwrapOrDefault failed on Ok")
+		}
+		if !r.IsOkAnd(func(x int) bool { return x > 5 }) {
+			t.Error("IsOkAnd failed")
+		}
+
+		err := errors.New("fail")
+		re := Error[int](err)
+		if re.UnwrapOrElse(func(e error) int { return 5 }) != 5 {
+			t.Error("UnwrapOrElse failed on Error")
+		}
+		if re.UnwrapOrDefault() != 0 {
+			t.Error("UnwrapOrDefault failed on Error")
+		}
+		if !re.IsErrorAnd(func(e error) bool { return e.Error() == "fail" }) {
+			t.Error("IsErrorAnd failed")
+		}
+	})
 }
 
 func TestOption(t *testing.T) {
@@ -113,6 +138,27 @@ func TestOption(t *testing.T) {
 		o2 := o.OrElse(func() Option[int] { return Some(10) })
 		if o2.Unwrap() != 10 {
 			t.Errorf("expected value to be 10, got %d", o2.Unwrap())
+		}
+	})
+
+	t.Run("NewMethods", func(t *testing.T) {
+		o := Some(10)
+		if o.UnwrapOrElse(func() int { return 0 }) != 10 {
+			t.Error("UnwrapOrElse failed on Some")
+		}
+		if o.UnwrapOrDefault() != 10 {
+			t.Error("UnwrapOrDefault failed on Some")
+		}
+		if !o.IsSomeAnd(func(x int) bool { return x > 5 }) {
+			t.Error("IsSomeAnd failed")
+		}
+
+		on := None[int]()
+		if on.UnwrapOrElse(func() int { return 5 }) != 5 {
+			t.Error("UnwrapOrElse failed on None")
+		}
+		if on.UnwrapOrDefault() != 0 {
+			t.Error("UnwrapOrDefault failed on None")
 		}
 	})
 }

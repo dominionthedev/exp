@@ -42,6 +42,28 @@ func (o Option[T]) UnwrapOr(def T) T {
 	return o.value
 }
 
+// UnwrapOrElse returns the value if it's present, or the result of the given function if it's not.
+func (o Option[T]) UnwrapOrElse(f func() T) T {
+	if !o.present {
+		return f()
+	}
+	return o.value
+}
+
+// UnwrapOrDefault returns the value if it's present, or the zero value of T if it's not.
+func (o Option[T]) UnwrapOrDefault() T {
+	if !o.present {
+		var zero T
+		return zero
+	}
+	return o.value
+}
+
+// IsSomeAnd returns true if the option is Some and the value matches the predicate.
+func (o Option[T]) IsSomeAnd(predicate func(T) bool) bool {
+	return o.present && predicate(o.value)
+}
+
 // Value returns the value and a boolean (standard Go map pattern).
 func (o Option[T]) Value() (T, bool) {
 	return o.value, o.present

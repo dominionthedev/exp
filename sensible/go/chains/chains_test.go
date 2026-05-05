@@ -52,4 +52,24 @@ func TestChain(t *testing.T) {
 			t.Errorf("expected 30, got %d", res)
 		}
 	})
+
+	t.Run("NewMethods", func(t *testing.T) {
+		c := New(5)
+		if c.Collect() != 5 {
+			t.Error("Collect failed")
+		}
+
+		if c.Filter(func(x int) bool { return x > 3 }).Value() != 5 {
+			t.Error("Filter true failed")
+		}
+		if c.Filter(func(x int) bool { return x > 10 }).Value() != 0 {
+			t.Error("Filter false failed")
+		}
+
+		var ptr *int
+		val := 10
+		if New(ptr).IfNone(&val).Value() == nil {
+			t.Error("IfNone failed")
+		}
+	})
 }
