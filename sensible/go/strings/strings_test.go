@@ -102,3 +102,42 @@ func TestToPascal_Unicode(t *testing.T) {
 		t.Error("ToPascal returned empty for unicode input")
 	}
 }
+
+func TestNewUtilities(t *testing.T) {
+	if Lower("HELLO") != "hello" {
+		t.Error("Lower failed")
+	}
+	if Upper("hello") != "HELLO" {
+		t.Error("Upper failed")
+	}
+	if SwapCase("Hello World") != "hELLO wORLD" {
+		t.Error("SwapCase failed")
+	}
+	if !StartsWith("hello", "he") {
+		t.Error("StartsWith failed")
+	}
+	if !EndsWith("hello", "lo") {
+		t.Error("EndsWith failed")
+	}
+	if !Contains("hello", "ell") {
+		t.Error("Contains failed")
+	}
+	if CountOccurrences("hello", "l") != 2 {
+		t.Error("CountOccurrences failed")
+	}
+	if !IsPalindrome("A man, a plan, a canal: Panama") {
+		t.Error("IsPalindrome failed")
+	}
+	if MaskText("1234567890", 2, 2, "*") != "12******90" {
+		t.Errorf("MaskText failed: %s", MaskText("1234567890", 2, 2, "*"))
+	}
+	if FirstWord("  hello world  ") != "hello" {
+		t.Error("FirstWord failed")
+	}
+	if LastWord("hello world  ") != "world" {
+		t.Error("LastWord failed")
+	}
+	if len(RandomString(10, "")) != 10 {
+		t.Error("RandomString failed")
+	}
+}

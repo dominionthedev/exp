@@ -44,7 +44,7 @@ def test_validate_args():
     result = add(5, 10)
     assert result == 15
     
-    with pytest.raises(TypeError, match="Argument 1 of add must be int"):
+    with pytest.raises(TypeError, match="Argument 'x' of add must be int"):
         add("5", 10)
 
 def test_validate_args_no_types_specified():
@@ -111,3 +111,15 @@ def test_validate_args_skip_first_arg_for_class_method():
     obj = MyClass()
     result = obj.method(5)
     assert result == 10
+
+def test_validate_args_any():
+    from typing import Any
+    @validate_args(Any, int)
+    def process(x, y):
+        return str(x) + str(y)
+
+    assert process("hello", 5) == "hello5"
+    assert process(10, 5) == "105"
+
+    with pytest.raises(TypeError, match="Argument 'y' of process must be int"):
+        process("hello", "5")

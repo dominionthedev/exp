@@ -88,3 +88,23 @@ def test_chain_conditional_processing():
         .value()
     )
     assert result == "DEFAULT"
+
+def test_chain_fold():
+    result = chain([1, 2, 3, 4, 5]).fold(lambda x, y: x + y).value()
+    assert result == 15
+
+    result = chain([1, 2, 3]).fold(lambda x, y: x * y, initial=10).value()
+    assert result == 60
+
+def test_chain_fold_error():
+    import pytest
+    with pytest.raises(TypeError, match=r"fold\(\) requires an iterable value"):
+        chain(5).fold(lambda x, y: x + y)
+
+def test_chain_is_none():
+    assert chain(None).is_none() is True
+    assert chain(10).is_none() is False
+
+def test_chain_is_not_none():
+    assert chain(None).is_not_none() is False
+    assert chain(10).is_not_none() is True

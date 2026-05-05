@@ -1,6 +1,7 @@
 import time
 import functools
 import operator
+import inspect
 from typing import Callable, Any, Type, Tuple, Union, Dict
 
 def timed(func: Callable) -> Callable:
@@ -92,25 +93,31 @@ def lru_cache(max_size: int = 128) -> Callable:
 def validate_args(*arg_types: Type) -> Callable:
     """Decorator that validates function arguments are of the correct type."""
     def decorator(func: Callable) -> Callable:
+        sig = inspect.signature(func)
+        parameters = list(sig.parameters.values())
+
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
             # Check positional args against provided types
-            # Skip first arg if it's a class instance (self) - check by type name
+            # Determine if we should skip 'self' or 'cls'
             start_idx = 0
-            if args and hasattr(args[0], '__class__') and not isinstance(args[0], type):
-                # First arg might be self, skip it if no type specified for it
-                # Only skip if we have arg_types specified
+            if parameters and parameters[0].name in ('self', 'cls'):
+                # If the first parameter is self/cls but no type was provided for it in arg_types
                 if len(arg_types) < len(args):
-                    # Check if first arg looks like self (has __dict__ and is not a type)
-                    if hasattr(args[0], '__dict__'):
-                        start_idx = 1
+                    start_idx = 1
             
             for i, (arg, expected_type) in enumerate(zip(args[start_idx:], arg_types)):
+                if expected_type is Any:
+                    continue
                 if not isinstance(arg, expected_type):
                     raise TypeError(
-                        f"Argument {i+1} of {func.__name__} must be {expected_type.__name__}, "
+                        f"Argument '{parameters[i + start_idx].name}' of {func.__name__} must be {expected_type.__name__}, "
                         f"got {type(arg).__name__}"
                     )
+
+            # Note: This basic implementation only checks positional args.
+            # Keyword args could also be checked but would require more complex logic.
+
             return func(*args, **kwargs)
         return wrapper
     return decorator
