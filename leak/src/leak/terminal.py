@@ -4,9 +4,10 @@ import termios
 import contextlib
 import os
 
+
 class Terminal:
     """Low-level terminal utilities and state management."""
-    
+
     @staticmethod
     @contextlib.contextmanager
     def raw_mode():

@@ -1,5 +1,5 @@
-from typing import Generic, TypeVar, Callable, Any, List, Optional, Iterable
 import functools
+from typing import Any, Callable, Generic, Iterable, List, Optional, TypeVar
 
 T = TypeVar("T")
 U = TypeVar("U")

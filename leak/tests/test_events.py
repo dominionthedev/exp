@@ -2,6 +2,7 @@ import asyncio
 import pytest
 from leak.events import EventBus, Event
 
+
 @pytest.mark.asyncio
 async def test_event_bus_dispatch():
     bus = EventBus()
@@ -12,13 +13,14 @@ async def test_event_bus_dispatch():
 
     bus.subscribe("test_event", callback)
     await bus.start()
-    
+
     await bus.emit(Event("test_event", "hello"))
     await asyncio.sleep(0.1)  # Give worker time to process
-    
+
     await bus.stop()
-    
+
     assert received_data == ["hello"]
+
 
 @pytest.mark.asyncio
 async def test_event_bus_unsubscribe():
@@ -31,10 +33,10 @@ async def test_event_bus_unsubscribe():
 
     bus.subscribe("test", callback)
     bus.unsubscribe("test", callback)
-    
+
     await bus.start()
     await bus.emit(Event("test"))
     await asyncio.sleep(0.1)
     await bus.stop()
-    
+
     assert received_count == 0

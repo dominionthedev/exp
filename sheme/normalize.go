@@ -3,10 +3,6 @@ package sheme
 // NormalizeStage clamps Background, Foreground, and Accent into ranges
 // that are physically readable in a terminal emulator.
 //
-// Why this matters: a palette designed for a web UI might have a background
-// at L=40 (charcoal) and a foreground at L=60 (light grey) — both fine
-// on a monitor but producing a muddy, low-contrast terminal theme.
-//
 // Ranges chosen from empirical terminal testing:
 //
 //	Dark  bg: L  0–22   V  0–20   (very dark, low chroma)

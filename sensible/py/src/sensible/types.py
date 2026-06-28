@@ -1,13 +1,15 @@
 from dataclasses import dataclass
-from typing import Generic, TypeVar, Optional, Any, Callable, Union, Type
+from typing import Any, Callable, Generic, Optional, TypeVar
 
 T = TypeVar("T")
 E = TypeVar("E")
 U = TypeVar("U")
 
+
 @dataclass(frozen=True)
 class Result(Generic[T, E]):
     """A value that can be either a success or a failure."""
+
     _value: Optional[T] = None
     _error: Optional[E] = None
     _is_ok: bool = True
@@ -77,6 +79,7 @@ class Result(Generic[T, E]):
 @dataclass(frozen=True)
 class Option(Generic[T]):
     """A value that can be either some value or nothing."""
+
     _value: Optional[T] = None
     _is_some: bool = True
 

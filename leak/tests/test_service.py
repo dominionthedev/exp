@@ -2,6 +2,7 @@ import asyncio
 import pytest
 from leak.service import Service
 
+
 @pytest.mark.asyncio
 async def test_service_lifecycle():
     service = Service()
@@ -22,7 +23,7 @@ async def test_service_lifecycle():
     await service.start()
     await asyncio.sleep(0.1)  # Give event loop time to dispatch
     assert start_received is True
-    
+
     await service.stop()
     await asyncio.sleep(0.1)
     assert stop_received is True

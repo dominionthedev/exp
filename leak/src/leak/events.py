@@ -1,18 +1,22 @@
 import asyncio
-from typing import Callable, Any, Dict, List, Set, Optional
+from typing import Callable, Any, Dict, Set, Optional
 import logging
 
 logger = logging.getLogger(__name__)
 
+
 class Event:
     """Base class for all leak events."""
+
     def __init__(self, name: str, data: Any = None):
         self.name = name
         self.data = data
         self.timestamp = asyncio.get_event_loop().time()
 
+
 class EventBus:
     """An asyncio-based event dispatcher."""
+
     def __init__(self):
         self._subscribers: Dict[str, Set[Callable]] = {}
         self._queue: asyncio.Queue = asyncio.Queue()
@@ -57,7 +61,7 @@ class EventBus:
             event = await self._queue.get()
             if event is None:
                 break
-            
+
             # Dispatch to subscribers
             handlers = self._subscribers.get(event.name, set())
             for handler in handlers:
@@ -68,5 +72,5 @@ class EventBus:
                         handler(event)
                 except Exception as e:
                     logger.error(f"Error in event handler for {event.name}: {e}")
-            
+
             self._queue.task_done()

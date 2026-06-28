@@ -1,6 +1,6 @@
 // Package sheme is the Shell Theme Engine.
 //
-// It converts a Wondertone palette into a shell-sourceable theme string
+// It converts palettes into a shell-sourceable theme string
 // through a staged colour pipeline:
 //
 //	Extract → Classify → Normalize → Neutralize → Assign → Adjust
@@ -8,9 +8,6 @@
 // Each stage has a single responsibility. The Neutralize stage is the key
 // component that fixes colour problems (low contrast, washed-out colours,
 // invisible cursor) before ANSI slots are assigned.
-//
-// sheme is a pure library — it produces strings, never files.
-// Writing, naming, or sourcing theme output is the caller's responsibility.
 //
 // Basic usage:
 //
